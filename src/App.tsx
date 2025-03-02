@@ -51,6 +51,8 @@ import { SaleProvider } from './contexts/SaleContext';
 import PurchasedPage from './pages/PurchasedPage';
 import RegisterPage from './pages/RegisterPage';
 import AppUrlListener from './components/AppUrlListener';
+import { Provider } from 'react-redux';
+import { store } from './store';
 
 setupIonicReact();
 
@@ -77,9 +79,9 @@ const App: React.FC = () => {
 
   return (
     <IonApp>
-      <SaleProvider>
-        <ProductProvider>
-          <ShoppingCartProvider>
+      <Provider store={store}>
+        <SaleProvider>
+          <ProductProvider>
             <IonReactRouter>
               <AppUrlListener></AppUrlListener>
               <IonSplitPane contentId="main">
@@ -127,9 +129,9 @@ const App: React.FC = () => {
                 </IonRouterOutlet>
               </IonSplitPane>
             </IonReactRouter>
-          </ShoppingCartProvider>
-        </ProductProvider>
-      </SaleProvider>
+          </ProductProvider>
+        </SaleProvider>
+      </Provider>
     </IonApp>
   );
 

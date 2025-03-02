@@ -6,10 +6,13 @@ import { Preferences } from '@capacitor/preferences';
 import { useContext, useEffect } from 'react';
 import { ItemsProduct } from '../model/ItemsProduct';
 import { changeProductStateToBuyed } from '../api/StockApi';
-import { CartContext } from '../contexts/ShoppingCartContext';
+//import { CartContext } from '../contexts/ShoppingCartContext';
 import { Email } from '../model/Email';
 import { sendEmail } from '../api/EmailApi';
 import { getUser } from '../api/UserApi';
+
+import { useSelector} from 'react-redux';
+import { checkOutList } from '../store/shoppingcart/selectors';
 
 const SALE_ID = 'saleid';
 
@@ -18,7 +21,8 @@ const CHECKOUT_LIST = 'checkoutlist';
 const SuccessPaymentPage: React.FC = () => {
 
     //const [sale, setSale] = useContext(SaleContext);
-    const { checkOutList } = useContext(CartContext);
+    //const { checkOutList } = useContext(CartContext);
+    const checkOut = useSelector(checkOutList);
     //const cl = checkOutList(); //  dont work why?
     const { search } = useLocation();
     const searchParams = new URLSearchParams(search);

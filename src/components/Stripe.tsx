@@ -7,8 +7,11 @@ import {
     useElements,
 } from '@stripe/react-stripe-js';
 import { paymentIntent } from '../api/StripeApi';
-import { CartContext } from '../contexts/ShoppingCartContext';
+//import { CartContext } from '../contexts/ShoppingCartContext';
 import { IonButton } from '@ionic/react';
+
+import { totalPrice } from '../store/shoppingcart/selectors';
+import { useSelector } from 'react-redux';
 
 const FRONT_END_SERVER = import.meta.env.VITE_FRONT_END_SERVER;
 const URL_CLIENT = FRONT_END_SERVER + '/SuccessPayment';
@@ -21,7 +24,8 @@ const CheckoutForm = () => {
 
     const [errorMessage, setErrorMessage] = useState(null);
 
-    const { totalPrice } = useContext(CartContext);
+    //const { totalPrice } = useContext(CartContext);
+    const total = useSelector(totalPrice);
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -38,7 +42,7 @@ const CheckoutForm = () => {
             return;
         }
 
-        const amount = totalPrice();
+        const amount = total;
 
         const clientSecret = await paymentIntent(amount, 'usd');
 

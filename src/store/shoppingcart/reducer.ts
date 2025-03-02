@@ -26,37 +26,40 @@ export const shoppingCartReducer = (state = initialState, action: ShoppingCartAc
         let p = action.payload.product;
         reserved(p._id);
 
+        let its = {} as ShoppingCartState;
+
         let ip: ItemsProduct[] = state.itemProducts.filter((c: ItemsProduct) => c.product._id === p._id);
 
         if (ip.length > 0) {
           state.itemProducts.reduce((acc: ItemsProduct[], curr: ItemsProduct) => {
             if (curr.product._id === p._id) {
-              const itemsProduct = { product: curr.product, quantity: curr.quantity + 1 } as ItemsProduct;
-              acc.push(itemsProduct);
+              const itemProduct = { product: curr.product, quantity: curr.quantity + 1 } as ItemsProduct;
+              its = { ...state, itemProducts: [itemProduct] };
             } else {
-              acc.push(curr);
+              its = { ...state, itemProducts: [...state.itemProducts, curr] };
             }
             return acc;
           }, []);
         } else {
-          const itemsProduct = { product: p, quantity: 1 } as ItemsProduct;
-          state.itemProducts.push(itemsProduct);
+          const itemProduct = { product: p, quantity: 1 } as ItemsProduct;
+          its = { ...state, itemProducts: [...state.itemProducts, itemProduct] };
         }
-        setPreferences(state.itemProducts);
-        return state;
+        setPreferences(its.itemProducts);
+        return its;
       }
 
     case DELETEALLITEMS:
 
       state.itemProducts.forEach(ip => cancelled(ip.product._id));
-      state.itemProducts.length = 0;
-      setPreferences(state.itemProducts);
-      return state;
+      setPreferences([]);
+      return { ...state, itemProducts: [] };
 
     case DELETEITEM:
 
       {
         let product = action.payload.product;
+
+        let its = {} as ShoppingCartState;
 
         cancelled(product._id);
 
@@ -65,16 +68,16 @@ export const shoppingCartReducer = (state = initialState, action: ShoppingCartAc
         if (ip.length > 0) {
           state.itemProducts.reduce((acc: ItemsProduct[], curr: ItemsProduct) => {
             if (curr.product._id === product._id) {
-              const itemsProduct = { product: curr.product, quantity: curr.quantity > 0 ? curr.quantity - 1 : 0 } as ItemsProduct;
-              acc.push(itemsProduct);
+              const itemProduct = { product: curr.product, quantity: curr.quantity > 0 ? curr.quantity - 1 : 0 } as ItemsProduct;
+              its = { ...state, itemProducts: [...state.itemProducts, itemProduct] };
             } else {
-              acc.push(curr);
+              its = { ...state, itemProducts: [...state.itemProducts, curr] };
             }
             return acc;
           }, [])
         }
-        setPreferences(state.itemProducts);
-        return state;
+        setPreferences(its.itemProducts);
+        return its;
       }
 
     default:

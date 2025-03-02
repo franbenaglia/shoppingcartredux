@@ -9,15 +9,20 @@ import {
     IonThumbnail
 } from '@ionic/react';
 import { useContext } from 'react';
-import { CartContext } from './../contexts/ShoppingCartContext';
+//import { CartContext } from './../contexts/ShoppingCartContext';
 import { ItemProps } from '../model/ItemProps';
 import { Link } from 'react-router-dom';
+
+import { useDispatch } from 'react-redux';
+import { addItem, deleteItem } from '../store/shoppingcart/actions';
 
 
 
 const Item: React.FC = ({ visible, product, editable, quantity }: ItemProps) => {
 
-    const { addItemToCart, deleteItemToCart } = useContext(CartContext);
+    //const { addItemToCart, deleteItemToCart } = useContext(CartContext);
+
+    const dispatch = useDispatch();
 
     return (
         <IonCard color="light">
@@ -31,8 +36,8 @@ const Item: React.FC = ({ visible, product, editable, quantity }: ItemProps) => 
                 <IonCardSubtitle>{'Price: ' + product.price} {((visible || editable) && product.stock) ? 'Stock: ' + product.stock.free : ''}</IonCardSubtitle>
             </IonCardHeader>
             <IonCardContent>{product.description}</IonCardContent>
-            {visible && <IonButton onClick={() => addItemToCart(product)}>Add Product</IonButton>}
-            {visible && <IonButton onClick={() => deleteItemToCart(product)}>Delete Product</IonButton>}
+            {visible && <IonButton onClick={() => dispatch(addItem(product))}>Add Product</IonButton>}
+            {visible && <IonButton onClick={() => dispatch(deleteItem(product))}>Delete Product</IonButton>}
             {editable && <Link to={'/Product/' + product._id}>Edit Product</Link>}
         </IonCard>
     );

@@ -7,24 +7,31 @@ import {
 
 import Item from './Item';
 import { useContext, useEffect, useState } from 'react';
-import { CartContext } from '../contexts/ShoppingCartContext';
+//import { CartContext } from '../contexts/ShoppingCartContext';
 import { proceedCheckOut } from '../api/SaleApi';
 import { Sale } from '../model/Sale';
 import { User } from '../model/User';
 import { StripeComponent } from './Stripe';
-import { SaleContext } from '../contexts/SaleContext';
 import { Preferences } from '@capacitor/preferences';
 import { getUser } from '../api/UserApi';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { checkOutList, totalPrice } from '../store/shoppingcart/selectors';
+import { deleteAllItems } from '../store/shoppingcart/actions';
+
 
 const SALE_ID = 'saleid';
 
 
 const Checkout: React.FC = () => {
 
-    const { totalPrice, checkOutList, deleteAllCartItems } = useContext(CartContext);
-    //const [sale, setSale] = useContext(SaleContext);
+    //const { totalPrice, checkOutList, deleteAllCartItems } = useContext(CartContext);
+    const checkOut = useSelector(checkOutList);
+    const total = useSelector(totalPrice);
+    const dispatch = useDispatch();
+    
     const [render, setRender] = useState(false);
-    const clist = checkOutList();
+    const clist = checkOut;
 
     let [userlogged, setUserlogged] = useState({ email: 'anonimo', role: 'user' });
 
@@ -41,7 +48,8 @@ const Checkout: React.FC = () => {
     }, []);
 
     const deleteCart = async () => {
-        deleteAllCartItems();
+        //deleteAllCartItems();
+        dispatch(deleteAllItems())
     }
 
     const proceed = async () => {
@@ -68,7 +76,7 @@ const Checkout: React.FC = () => {
 
     return (
         <IonList>
-            <IonListHeader>Products, amount: {totalPrice()}</IonListHeader>
+            <IonListHeader>Products, amount: {total}</IonListHeader>
             {clist && clist.map((ip, idx) => {
                 const ips: any = { visible: false, product: ip.product, quantity: ip.quantity };
                 return <Item {...ips} key={idx} />;
