@@ -31,15 +31,16 @@ export const shoppingCartReducer = (state = initialState, action: ShoppingCartAc
         let ip: ItemsProduct[] = state.itemProducts.filter((c: ItemsProduct) => c.product._id === p._id);
 
         if (ip.length > 0) {
-          state.itemProducts.reduce((acc: ItemsProduct[], curr: ItemsProduct) => {
+          const itps = state.itemProducts.reduce((acc: ItemsProduct[], curr: ItemsProduct) => {
             if (curr.product._id === p._id) {
               const itemProduct = { product: curr.product, quantity: curr.quantity + 1 } as ItemsProduct;
-              its = { ...state, itemProducts: [itemProduct] };
+              acc.push(itemProduct);
             } else {
-              its = { ...state, itemProducts: [...state.itemProducts, curr] };
+              acc.push(curr);
             }
             return acc;
           }, []);
+          its = { ...state, itemProducts: itps };
         } else {
           const itemProduct = { product: p, quantity: 1 } as ItemsProduct;
           its = { ...state, itemProducts: [...state.itemProducts, itemProduct] };
@@ -66,15 +67,16 @@ export const shoppingCartReducer = (state = initialState, action: ShoppingCartAc
         let ip: ItemsProduct[] = state.itemProducts.filter((c: ItemsProduct) => c.product._id === product._id);
 
         if (ip.length > 0) {
-          state.itemProducts.reduce((acc: ItemsProduct[], curr: ItemsProduct) => {
+          const itps = state.itemProducts.reduce((acc: ItemsProduct[], curr: ItemsProduct) => {
             if (curr.product._id === product._id) {
               const itemProduct = { product: curr.product, quantity: curr.quantity > 0 ? curr.quantity - 1 : 0 } as ItemsProduct;
-              its = { ...state, itemProducts: [...state.itemProducts, itemProduct] };
+              acc.push(itemProduct);
             } else {
-              its = { ...state, itemProducts: [...state.itemProducts, curr] };
+              acc.push(curr);
             }
             return acc;
-          }, [])
+          }, []);
+          its = { ...state, itemProducts: itps };
         }
         setPreferences(its.itemProducts);
         return its;
